@@ -1,0 +1,28 @@
+{
+  "schemes": [
+    {
+      "id": "01913b89-9a43-7163-8757-01cc254783f3",
+      "name": "Retrenchment Assistance Scheme",
+      "criteria": {
+        "employment_status": "unemployed"
+      },
+      "benefits": [
+        {
+          "id": "01913b8b-9b12-7d2c-a1fa-ea613b802ebc",
+          "name": "SkillsFuture Credits",
+          "amount": 500.00
+        }
+      ]
+    },
+    {
+      "id": "01913b89-befc-7ae3-bb37-3079aa7f1be0",
+      "name": "Retrenchment Assistance Scheme (families)",
+      "criteria": {
+        "employment_status": "unemployed",
+        "has_children": {
+          "school_level": "== primary"
+        }
+      }
+    }
+  ]
+}

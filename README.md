@@ -50,8 +50,10 @@ go run main.go
 ```
 
 ### 6. API Documentation
-- **Postman Collection**: Import the provided JSON file. and add envvironmnet varible domain:"http://localhost:8000"
-
+- **Postman Collection**: Import the provided JSON file. and add envvironmnet varible 
+```
+domain:"http://localhost:8000"
+```
 
 ---
 

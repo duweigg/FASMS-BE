@@ -98,6 +98,11 @@ For full API details, check the **Postman Collection**.
 | relation | 2 | spouse |
 | relation | 3 | parents |
 | relation | 99 | no relation requiment |
+| marital_status | 1 | Single |
+| marital_status | 2 | Married |
+| marital_status | 3 | Widowed |
+| marital_status | 4 | Divorced |
+| marital_status | 99 | no marital_status requiment |
 | application_status | 1 | submitted |
 | application_status | 2 | approved |
 | application_status | 3 | rejected |

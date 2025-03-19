@@ -129,6 +129,8 @@ func (ac *ApplicationController) CreateApplication(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create applicant"})
 			return
 		}
+		newApplication.Applicant = applicant
+		newApplication.Scheme = scheme
 		c.JSON(http.StatusCreated, newApplication.ConvertToResponse())
 	} else {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Applicant is not eligible for the selected scheme"})

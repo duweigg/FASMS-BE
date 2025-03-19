@@ -338,6 +338,7 @@ func (sc *SchemeController) UpdateScheme(c *gin.Context) {
 	}
 
 	var newGroups []models.CriteriaGroup
+	var createGroups []models.CriteriaGroup
 
 	for _, newGroup := range updatedScheme.CriteriaGroups {
 		groupID := newGroup.ID
@@ -349,7 +350,6 @@ func (sc *SchemeController) UpdateScheme(c *gin.Context) {
 
 		// Check if group exists in DB
 		existingGroup, exists := existingGroups[groupID]
-
 		if exists {
 			// Update the existing group
 			updatedCriterias, err := UpdateCriterias(tx, existingGroup.Criterias, newGroup.Criterias, groupID)
@@ -362,12 +362,19 @@ func (sc *SchemeController) UpdateScheme(c *gin.Context) {
 			delete(existingGroups, groupID) // Remove from map to track deletions
 		} else {
 			// New group to be inserted
-			newGroupModel := models.CriteriaGroup{
+			createGroups = append(createGroups, models.CriteriaGroup{
 				ID:        groupID,
 				SchemeID:  schemeID,
 				Criterias: models.ConvertCriterias(newGroup.Criterias, groupID),
+			})
+		}
+		if len(createGroups) > 0 {
+			if err := tx.Save(&createGroups).Error; err != nil {
+				tx.Rollback()
+				log.Printf("Save new benefits failed: %v\n", err)
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Save new benefits failed"})
+				return
 			}
-			newGroups = append(newGroups, newGroupModel)
 		}
 	}
 	for _, group := range existingGroups {
@@ -432,7 +439,7 @@ func (sc *SchemeController) UpdateScheme(c *gin.Context) {
 	for _, benefit := range existingBenefits {
 		tx.Delete(&benefit)
 	}
-	existingScheme.CriteriaGroups = newGroups
+	existingScheme.CriteriaGroups = append(newGroups, createGroups...)
 	existingScheme.Benefits = append(newBenefits, createBenefits...)
 
 	if err := tx.Commit().Error; err != nil {

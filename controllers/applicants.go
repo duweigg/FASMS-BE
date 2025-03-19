@@ -127,9 +127,11 @@ func (ac *ApplicantController) UpdateApplicant(c *gin.Context) {
 	// Check if the IC already exists
 	var existingApplicant models.Applicants
 	if err := ac.DB.Where("ic", updatedApplicant.IC).First(&existingApplicant).Error; err == nil {
-		log.Printf("applicant with the same IC: %v already exists\n", existingApplicant.IC)
-		c.JSON(http.StatusConflict, gin.H{"error": fmt.Sprintf("applicant with the same IC: %v already exists", existingApplicant.IC)})
-		return
+		if existingApplicant.ID != applicantID {
+			log.Printf("applicant with the same IC: %v already exists\n", existingApplicant.IC)
+			c.JSON(http.StatusConflict, gin.H{"error": fmt.Sprintf("applicant with the same IC: %v already exists", existingApplicant.IC)})
+			return
+		}
 	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
 		log.Printf("Database error when update applicant: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})

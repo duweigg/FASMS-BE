@@ -7,7 +7,7 @@ import (
 
 type Schemes struct {
 	ID             string          `json:"id" gorm:"primaryKey"`
-	Name           string          `json:"name gorm:"unique""`
+	Name           string          `json:"name" gorm:"unique"`
 	CriteriaGroups []CriteriaGroup `json:"criteria_groups" gorm:"foreignKey:SchemeID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Benefits       []Benefits      `json:"benifits" gorm:"foreignKey:SchemeID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	CommonTime

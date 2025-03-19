@@ -1,35 +1,35 @@
 {
   "applicants": [
     {
-      "id": "01913b7a-4493-74b2-93f8-e684c4ca935c",
       "name": "James",
-      "employment_status": "unemployed",
-      "sex": "male",
-      "date_of_birth": "1990-07-01",
-      "household": []
+      "ic": "S9036948G",
+      "employment_status": 1,
+      "sex": 1,
+      "dob": "1990-07-01",
+      "households": []
     },
     {
-      "id": "01913b80-2c04-7f9d-86a4-497ef68cb3a0",
       "name": "Mary",
-      "employment_status": "unemployed",
-      "sex": "female",
-      "date_of_birth": "1984-10-06",
-      "household": [
+      "ic": "S8436948G",
+      "employment_status": 1,
+      "sex": 2,
+      "dob": "1984-10-06",
+      "households": [
         {
-          "id": "01913b88-1d4d-7152-a7ce-75796a2e8ecf",
           "name": "Gwen",
-          "employment_status": "unemployed",
-          "sex": "female",
-          "date_of_birth": "2016-02-01",
-          "relation": "daughter"
+          "ic": "S1656948G",
+          "employment_status": 3,
+          "sex": 2,
+          "dob": "2016-02-01",
+          "relation": 1
         },
         {
-          "id": "01913b88-65c6-7255-820f-9c4dd1e5ce79",
           "name": "Jayden",
-          "employment_status": "unemployed",
-          "sex": "male",
-          "date_of_birth": "2018-03-15",
-          "relation": "son"
+          "ic": "S1856948G",
+          "employment_status": 3,
+          "sex": 1,
+          "dob": "2018-03-15",
+          "relation": 1
         }
       ]
     }

@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"FASMS/models"
-	"FASMS/utils"
 	"errors"
 	"log"
 	"net/http"
@@ -39,7 +38,7 @@ func (ac *ApplicationController) GetApplicationList(c *gin.Context) {
 	// Fetch applicants and return 500 Internal Server Error on failure
 	var query = ac.DB.Offset(applicationsRequest.Page * applicationsRequest.PageSize).Limit(applicationsRequest.PageSize)
 	if err := query.Preload("Scheme").
-		Preload("Scheme.Criterias").
+		Preload("Scheme.CriteriaGroups.Criterias").
 		Preload("Scheme.Benefits").
 		Preload("Applicant").
 		Preload("Applicant.Households").
@@ -112,30 +111,25 @@ func (ac *ApplicationController) CreateApplication(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch applicants list"})
 		return
 	}
-	// Fetch applicants and return 500 Internal Server Error on failure
-	if err := ac.DB.Preload("Criterias").Preload("Benefits").Where("id = ?", applicationsRequest.SchemeID).First(&scheme).Error; err != nil {
+	// Fetch scheme and return 500 Internal Server Error on failure
+	if err := ac.DB.Preload("CriteriaGroups.Criterias").Preload("Benefits").Where("id = ?", applicationsRequest.SchemeID).First(&scheme).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Printf("scheme with id: %s did not found, %v\n", applicationsRequest.SchemeID, err)
 			c.JSON(http.StatusNotFound, gin.H{"error": "Scheme not found"})
 			return
 		}
-		log.Printf("Database error fetching applicants: %v\n", err)
+		log.Printf("Database error fetching scheme: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch scheme list"})
 		return
 	}
 	if models.CheckEligiblity(applicant, scheme) {
-		var newApplication = models.Applications{
-			ID:                utils.GenerateUUID(),
-			ApplicantID:       applicant.ID,
-			SchemeID:          scheme.ID,
-			ApplicationStatus: 0,
-		}
+		newApplication := applicationsRequest.ConvertToModel()
 		if err := ac.DB.Create(&newApplication).Error; err != nil {
 			log.Printf("create applicants failed: %v\n", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create applicant"})
 			return
 		}
-		c.JSON(http.StatusCreated, newApplication)
+		c.JSON(http.StatusCreated, newApplication.ConvertToResponse())
 	} else {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Applicant is not eligible for the selected scheme"})
 	}
@@ -153,7 +147,13 @@ func (ac *ApplicationController) UpdateApplication(c *gin.Context) {
 	}
 
 	// Fetch applicants and return 500 Internal Server Error on failure
-	if err := ac.DB.Where("id = ?", applicationID).First(&models.Applications{}).Error; err != nil {
+	var application models.Applications
+	if err := ac.DB.Preload("Scheme").
+		Preload("Scheme.CriteriaGroups.Criterias").
+		Preload("Scheme.Benefits").
+		Preload("Applicant").
+		Preload("Applicant.Households").
+		Where("id = ?", applicationID).First(&application).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Printf("application with id: %s did not found, %v\n", applicationID, err)
 			c.JSON(http.StatusNotFound, gin.H{"error": "Application not found"})
@@ -171,21 +171,12 @@ func (ac *ApplicationController) UpdateApplication(c *gin.Context) {
 
 	// Check if any rows were affected
 	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "while updating application, Failed to update applications"})
+		log.Printf("Error updating application with id: %s, %v\n", applicationID, result.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update application"})
 		return
 	}
 
-	var application models.Applications
-	if err := ac.DB.Where("id = ?", applicationID).First(&application).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			log.Printf("application with id: %s did not found, %v\n", applicationID, err)
-			c.JSON(http.StatusNotFound, gin.H{"error": "Application not found"})
-			return
-		}
-		log.Printf("Database error fetching Application: %v\n", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch Application"})
-		return
-	}
+	application.ApplicationStatus = applicationsRequest.ApplicationStatus
 	c.JSON(http.StatusOK, gin.H{"application": application.ConvertToResponse()})
 }
 

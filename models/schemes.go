@@ -2,11 +2,12 @@ package models
 
 import (
 	"FASMS/utils"
+	"errors"
 )
 
 type Schemes struct {
 	ID             string          `json:"id" gorm:"primaryKey"`
-	Name           string          `json:"name"`
+	Name           string          `json:"name gorm:"unique""`
 	CriteriaGroups []CriteriaGroup `json:"criteria_groups" gorm:"foreignKey:SchemeID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Benefits       []Benefits      `json:"benifits" gorm:"foreignKey:SchemeID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	CommonTime
@@ -61,17 +62,17 @@ type CreateCriteriaGroupsRequest struct {
 }
 type CreateCriteriaRequest struct {
 	ID               string `json:"id"`
-	EmploymentStatus uint   `json:"employment_status"`
-	Sex              uint   `json:"sex"`
-	AgeUpperLimit    uint32 `json:"age_upper_limit"`
-	AgeLowerLimit    uint32 `json:"age_lower_limit"`
-	Relation         uint   `json:"relation"`
+	EmploymentStatus uint   `json:"employment_status" binding:"oneof=0 1 2 99"`
+	Sex              uint   `json:"sex" binding:"oneof=0 1 99"`
+	AgeUpperLimit    uint32 `json:"age_upper_limit" binding:"gte=0"`
+	AgeLowerLimit    uint32 `json:"age_lower_limit" binding:"gte=0"`
+	Relation         uint   `json:"relation" binding:"oneof=0 1 2 99"`
 	IsHouseHold      bool   `json:"is_household" binding:"required"`
 }
 type CreateBenefitRequest struct {
 	ID     string  `json:"id"`
 	Name   string  `json:"name"  binding:"required"`
-	Amount float32 `json:"amount"  binding:"required"`
+	Amount float32 `json:"amount"  binding:"required,gte=0"`
 }
 
 type SchemesResponse struct {
@@ -181,6 +182,48 @@ func (s *CreateSchemesRequest) ConvertToModel() Schemes {
 		CriteriaGroups: criteriaGroups,
 		Benefits:       benefits,
 	}
+}
+
+// we have an assumption that only one criteria group can have applicant criteria,
+// and within that group no household criteria should be existing
+func (s *CreateSchemesRequest) IsValidScheme() (bool, error) {
+	// a scheme has to have at least one criteriaGroup
+	if len(s.CriteriaGroups) == 0 {
+		return false, errors.New("a scheme must have at least one criteria group")
+	}
+	// a scheme has to have at least one benefit
+	if len(s.Benefits) == 0 {
+		return false, errors.New("a scheme must have at least one benefit")
+	}
+	// for all the criteriaGroup, there are at least one criteria
+	for _, group := range s.CriteriaGroups {
+		if len(group.Criterias) == 0 {
+			return false, errors.New("a scheme's criteria group must have at least one criteria")
+		}
+	}
+
+	//checking if we only have 1 criteria group for applicant, and
+	// in that group no criteria is household
+	var applicantCriteriaGroup []CreateCriteriaGroupsRequest
+	for _, group := range s.CriteriaGroups {
+		for _, criteria := range group.Criterias {
+			if !criteria.IsHouseHold {
+				applicantCriteriaGroup = append(applicantCriteriaGroup, group)
+				continue
+			}
+		}
+	}
+	if len(applicantCriteriaGroup) > 1 {
+		return false, errors.New("a scheme can only has one criteria group that criteria on applicant")
+	}
+	if len(applicantCriteriaGroup) == 1 {
+		for _, criteria := range applicantCriteriaGroup[0].Criterias {
+			if criteria.IsHouseHold {
+				return false, errors.New("a scheme's criteria group criteria on applicant can not have any criteria that is on household")
+			}
+		}
+	}
+	return true, nil
 }
 
 func ConvertCriterias(newCriterias []CreateCriteriaRequest, groupID string) []Criterias {

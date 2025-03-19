@@ -4,6 +4,7 @@ import (
 	"FASMS/models"
 	"FASMS/utils"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -74,33 +75,21 @@ func (ac *ApplicantController) CreateApplicants(c *gin.Context) {
 		return
 	}
 
-	var applicants []models.Applicants
-
-	for _, appReq := range req.Applicants {
-		applicant := models.Applicants{
-			ID:               utils.GenerateUUID(),
-			Name:             appReq.Name,
-			EmploymentStatus: appReq.EmploymentStatus,
-			Sex:              appReq.Sex,
-			DOB:              appReq.DOB.ToTime(),
-		}
-		var households []models.Households
-
-		for _, household := range appReq.Households {
-			households = append(households, models.Households{
-				ID:               utils.GenerateUUID(),
-				Name:             household.Name,
-				EmploymentStatus: household.EmploymentStatus,
-				Sex:              household.Sex,
-				DOB:              household.DOB.ToTime(),
-				Relation:         household.Relation,
-				ApplicantID:      applicant.ID,
-			})
-		}
-		applicant.Households = households
-		applicants = append(applicants, applicant)
+	// Check if the IC already exists
+	var ICList []string
+	for _, applicantRequest := range req.Applicants {
+		ICList = append(ICList, applicantRequest.IC)
+	}
+	var existingApplicant models.Applicants
+	if err := ac.DB.Where("ic in (?)", ICList).First(&existingApplicant).Error; err == nil {
+		c.JSON(http.StatusConflict, gin.H{"error": fmt.Sprintf("applicant with the same IC: %v already exists", existingApplicant.IC)})
+		return
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+		return
 	}
 
+	applicants := req.ConvertToModel()
 	tx := ac.DB.Begin()
 	defer func() {
 		if r := recover(); r != nil {

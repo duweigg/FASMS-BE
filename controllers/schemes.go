@@ -4,6 +4,7 @@ import (
 	"FASMS/models"
 	"FASMS/utils"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -137,6 +138,28 @@ func (sc *SchemeController) AddSchemes(c *gin.Context) {
 		return
 	}
 
+	var newSchemeName []string
+	for _, newscheme := range addSchemesRequest.Schemes {
+		// validate each new scheme added
+		isvalidScheem, err := newscheme.IsValidScheme()
+		if !isvalidScheem {
+			log.Printf("New scheme is not valid: %v\n", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("New scheme is not valid, %v", err.Error())})
+			return
+		}
+		newSchemeName = append(newSchemeName, newscheme.Name)
+	}
+
+	// check if the scheme with same name exists
+	var existingScheme models.Schemes
+	if err := sc.DB.Where("name in (?)", newSchemeName).First(&existingScheme).Error; err == nil {
+		c.JSON(http.StatusConflict, gin.H{"error": fmt.Sprintf("scheme with the same name: %v already exists", existingScheme.Name)})
+		return
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+		return
+	}
+
 	var schemes []models.Schemes
 
 	for _, scheme := range addSchemesRequest.Schemes {
@@ -151,8 +174,8 @@ func (sc *SchemeController) AddSchemes(c *gin.Context) {
 	}()
 	if err := tx.Create(&schemes).Error; err != nil {
 		tx.Rollback()
-		log.Printf("create applicants failed: %v\n", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create applicant"})
+		log.Printf("create schemes failed: %v\n", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create schemes"})
 		return
 	}
 	if err := tx.Commit().Error; err != nil {
@@ -271,6 +294,13 @@ func (sc *SchemeController) UpdateScheme(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&updatedScheme); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	isvalidScheem, err := updatedScheme.IsValidScheme()
+	if !isvalidScheem {
+		log.Printf("New scheme is not valid: %v\n", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("New scheme is not valid, %v", err.Error())})
 		return
 	}
 

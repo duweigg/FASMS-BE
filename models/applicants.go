@@ -8,6 +8,7 @@ import (
 type Applicants struct {
 	ID               string       `json:"id" gorm:"primaryKey"`
 	Name             string       `json:"name"`
+	IC               string       `json:"ic" gorm:"unique,not null"`
 	EmploymentStatus uint         `json:"employment_status" gorm:"comment:'0: unemployed, 1: employed, 3: in school'"`
 	Sex              uint         `json:"sex" gorm:"comment:'0: male, 1: female"`
 	DOB              time.Time    `gorm:"type:date" json:"dob"`
@@ -18,7 +19,8 @@ type Applicants struct {
 type Households struct {
 	ID               string     `json:"id" gorm:"primaryKey"`
 	Name             string     `json:"name"`
-	EmploymentStatus uint       `json:"employment_status" gorm:"comment:'0: unemployed, 1: employed, 3: in school'"`
+	IC               string     `json:"ic"`
+	EmploymentStatus uint       `json:"employment_status" gorm:"comment:'0: unemployed, 1: employed, 2: in school'"`
 	Sex              uint       `json:"sex" gorm:"comment:'0: male, 1: female"`
 	DOB              time.Time  `gorm:"type:date" json:"dob"`
 	Relation         uint       `json:"relation" gorm:"comment:'0: children, 1: spouse, 2: parents'"`
@@ -31,45 +33,50 @@ type GetApplicantsRequest struct {
 	PaginationQuery
 }
 type CreateApplicants struct {
-	Name             string             `json:"name"`
-	EmploymentStatus uint               `json:"employment_status"`
-	Sex              uint               `json:"sex"`
-	DOB              utils.Date         `json:"dob"`
+	Name             string             `json:"name"  binding:"required"`
+	IC               string             `json:"ic"  binding:"required"`
+	EmploymentStatus uint               `json:"employment_status" binding:"oneof=0 1 2"`
+	Sex              uint               `json:"sex" binding:"oneof=0 1"`
+	DOB              utils.Date         `json:"dob" binding:"required"`
 	Households       []CreateHouseholds `json:"households"`
 }
 type CreateHouseholds struct {
 	ID               string     `json:"id" gorm:"primaryKey"`
-	Name             string     `json:"name"`
-	EmploymentStatus uint       `json:"employment_status"`
-	Sex              uint       `json:"sex"`
-	DOB              utils.Date `json:"dob"`
-	Relation         uint       `json:"relation"`
+	Name             string     `json:"name" binding:"required"`
+	IC               string     `json:"ic"  binding:"required"`
+	EmploymentStatus uint       `json:"employment_status" binding:"oneof=0 1 2"`
+	Sex              uint       `json:"sex" binding:"oneof=0 1"`
+	DOB              utils.Date `json:"dob" binding:"required"`
+	Relation         uint       `json:"relation" binding:"required,oneof=0 1 2"`
 }
 type CreateApplicantsRequest struct {
 	Applicants []CreateApplicants `json:"applicants"`
 }
 
 type ApplicantsResponse struct {
-	ID               string               `json:"id" gorm:"primaryKey"`
+	ID               string               `json:"id"`
 	Name             string               `json:"name"`
-	EmploymentStatus uint                 `json:"employment_status" gorm:"comment:'0: unemployed, 1: employed, 3: in school'"`
+	IC               string               `json:"ic"`
+	EmploymentStatus uint                 `json:"employment_status"`
 	Sex              uint                 `json:"sex"`
 	DOB              utils.Date           `json:"dob"`
-	Households       []HouseholdsResponse `json:"households" gorm:"foreignKey:ApplicantID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Households       []HouseholdsResponse `json:"households"`
 }
 type HouseholdsResponse struct {
-	ID               string     `json:"id" gorm:"primaryKey"`
+	ID               string     `json:"id"`
 	Name             string     `json:"name"`
-	EmploymentStatus uint       `json:"employment_status" gorm:"comment:'0: unemployed, 1: employed, 3: in school'"`
-	Sex              uint       `json:"sex" gorm:"comment:'0: male, 1: female"`
-	DOB              utils.Date `gorm:"type:date" json:"dob"`
-	Relation         uint       `json:"relation" gorm:"comment:'0: children, 1: spouse, 2: parents'"`
+	IC               string     `json:"ic"`
+	EmploymentStatus uint       `json:"employment_status"`
+	Sex              uint       `json:"sex"`
+	DOB              utils.Date `json:"dob"`
+	Relation         uint       `json:"relation"`
 }
 
 func (a *Applicants) ConvertToResponse() ApplicantsResponse {
 	applicants := ApplicantsResponse{
 		ID:               a.ID,
 		Name:             a.Name,
+		IC:               a.IC,
 		EmploymentStatus: a.EmploymentStatus,
 		Sex:              a.Sex,
 		DOB:              utils.Date(a.DOB),
@@ -78,11 +85,44 @@ func (a *Applicants) ConvertToResponse() ApplicantsResponse {
 		applicants.Households = append(applicants.Households, HouseholdsResponse{
 			ID:               household.ID,
 			Name:             household.Name,
+			IC:               household.IC,
 			EmploymentStatus: household.EmploymentStatus,
 			Sex:              household.Sex,
 			DOB:              utils.Date(household.DOB),
 			Relation:         household.Relation,
 		})
+	}
+	return applicants
+}
+
+func (a *CreateApplicantsRequest) ConvertToModel() []Applicants {
+
+	var applicants []Applicants
+	for _, appReq := range a.Applicants {
+		applicant := Applicants{
+			ID:               utils.GenerateUUID(),
+			IC:               appReq.IC,
+			Name:             appReq.Name,
+			EmploymentStatus: appReq.EmploymentStatus,
+			Sex:              appReq.Sex,
+			DOB:              appReq.DOB.ToTime(),
+		}
+		var households []Households
+
+		for _, household := range appReq.Households {
+			households = append(households, Households{
+				ID:               utils.GenerateUUID(),
+				Name:             household.Name,
+				IC:               household.IC,
+				EmploymentStatus: household.EmploymentStatus,
+				Sex:              household.Sex,
+				DOB:              household.DOB.ToTime(),
+				Relation:         household.Relation,
+				ApplicantID:      applicant.ID,
+			})
+		}
+		applicant.Households = households
+		applicants = append(applicants, applicant)
 	}
 	return applicants
 }

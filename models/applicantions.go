@@ -1,6 +1,9 @@
 package models
 
-import "log"
+import (
+	"FASMS/utils"
+	"log"
+)
 
 type Applications struct {
 	ID                string     `json:"id" gorm:"primaryKey"`
@@ -17,25 +20,40 @@ type GetApplicationsRequest struct {
 }
 
 type CreateApplicationRequest struct {
-	ApplicantID string `json:"applicant_id"`
-	SchemeID    string `json:"scheme_id"`
+	ApplicantID string `json:"applicant_id" binding:"required"`
+	SchemeID    string `json:"scheme_id" binding:"required"`
 }
 type UpdateApplicationRequest struct {
-	ApplicationStatus uint `json:"application_status"`
+	ApplicationStatus uint `json:"application_status" binding:"oneof=0 1 2 3"`
 }
 type ApplicationsResponse struct {
-	Applicant ApplicantsResponse `json:"applicant"`
-	Scheme    SchemesResponse    `json:"scheme"`
+	ID                string             `json:"id"`
+	Applicant         ApplicantsResponse `json:"applicant"`
+	Scheme            SchemesResponse    `json:"scheme"`
+	ApplicationStatus uint               `json:"application_status"`
 }
 
 func (ar *Applications) ConvertToResponse() ApplicationsResponse {
 	return ApplicationsResponse{
-		Applicant: ar.Applicant.ConvertToResponse(),
-		Scheme:    ar.Scheme.ConvertToResponse(),
+		ID:                ar.ID,
+		Applicant:         ar.Applicant.ConvertToResponse(),
+		Scheme:            ar.Scheme.ConvertToResponse(),
+		ApplicationStatus: ar.ApplicationStatus,
 	}
 }
 
-// we have an assumption that only one criteria group can have applicant criteria
+func (car *CreateApplicationRequest) ConvertToModel() Applications {
+	var newApplication = Applications{
+		ID:                utils.GenerateUUID(),
+		ApplicantID:       car.ApplicantID,
+		SchemeID:          car.SchemeID,
+		ApplicationStatus: 0,
+	}
+	return newApplication
+}
+
+// the biz logic is that applicant must satisify all the criteria groups.
+// a criteria group is considered as satisified if any of the criteria in the groupo is satisified
 func CheckEligiblity(applicant Applicants, scheme Schemes) bool {
 	if len(scheme.CriteriaGroups) == 0 {
 		return true

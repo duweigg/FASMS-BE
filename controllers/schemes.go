@@ -484,7 +484,7 @@ func UpdateCriterias(tx *gorm.DB, existingCriterias []models.Criterias, newCrite
 			existingCriteria.AgeUpperLimit = newCriteria.AgeUpperLimit
 			existingCriteria.AgeLowerLimit = newCriteria.AgeLowerLimit
 			existingCriteria.Relation = newCriteria.Relation
-			existingCriteria.IsHouseHold = newCriteria.IsHouseHold
+			existingCriteria.IsHouseHold = *newCriteria.IsHouseHold
 			updatedCriterias = append(updatedCriterias, existingCriteria)
 			delete(existingCriteriasMap, criteriaID) // Mark as processed
 		} else {
@@ -496,7 +496,7 @@ func UpdateCriterias(tx *gorm.DB, existingCriterias []models.Criterias, newCrite
 				AgeUpperLimit:    newCriteria.AgeUpperLimit,
 				AgeLowerLimit:    newCriteria.AgeLowerLimit,
 				Relation:         newCriteria.Relation,
-				IsHouseHold:      newCriteria.IsHouseHold,
+				IsHouseHold:      *newCriteria.IsHouseHold,
 				CriteriaGroupID:  groupID,
 			})
 		}

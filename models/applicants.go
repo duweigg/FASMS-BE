@@ -9,8 +9,8 @@ type Applicants struct {
 	ID               string       `json:"id" gorm:"primaryKey"`
 	Name             string       `json:"name"`
 	IC               string       `json:"ic" gorm:"unique,not null"`
-	EmploymentStatus uint         `json:"employment_status" gorm:"comment:'0: unemployed, 1: employed, 3: in school'"`
-	Sex              uint         `json:"sex" gorm:"comment:'0: male, 1: female"`
+	EmploymentStatus uint         `json:"employment_status" gorm:"comment:'1: unemployed, 2: employed, 3: in school'"`
+	Sex              uint         `json:"sex" gorm:"comment:'1: male, 2: female"`
 	DOB              time.Time    `gorm:"type:date" json:"dob"`
 	Households       []Households `json:"households" gorm:"foreignKey:ApplicantID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	CommonTime
@@ -20,10 +20,10 @@ type Households struct {
 	ID               string     `json:"id" gorm:"primaryKey"`
 	Name             string     `json:"name"`
 	IC               string     `json:"ic"`
-	EmploymentStatus uint       `json:"employment_status" gorm:"comment:'0: unemployed, 1: employed, 2: in school'"`
-	Sex              uint       `json:"sex" gorm:"comment:'0: male, 1: female"`
+	EmploymentStatus uint       `json:"employment_status" gorm:"comment:'1: unemployed, 2: employed, 3: in school'"`
+	Sex              uint       `json:"sex" gorm:"comment:'1: male, 2: female"`
 	DOB              time.Time  `gorm:"type:date" json:"dob"`
-	Relation         uint       `json:"relation" gorm:"comment:'0: children, 1: spouse, 2: parents'"`
+	Relation         uint       `json:"relation" gorm:"comment:'1: children, 2: spouse, 3: parents'"`
 	ApplicantID      string     `json:"applicant_id" gorm:"index;not null"`
 	Applicant        Applicants `json:"-" gorm:"foreignKey:ApplicantID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	CommonTime
@@ -35,8 +35,8 @@ type GetApplicantsRequest struct {
 type CreateApplicants struct {
 	Name             string             `json:"name"  binding:"required"`
 	IC               string             `json:"ic"  binding:"required"`
-	EmploymentStatus uint               `json:"employment_status" binding:"oneof=0 1 2"`
-	Sex              uint               `json:"sex" binding:"oneof=0 1"`
+	EmploymentStatus uint               `json:"employment_status" binding:"required,oneof=1 2 3"`
+	Sex              uint               `json:"sex" binding:"required,oneof=1 2"`
 	DOB              utils.Date         `json:"dob" binding:"required"`
 	Households       []CreateHouseholds `json:"households"`
 }
@@ -44,13 +44,13 @@ type CreateHouseholds struct {
 	ID               string     `json:"id" gorm:"primaryKey"`
 	Name             string     `json:"name" binding:"required"`
 	IC               string     `json:"ic"  binding:"required"`
-	EmploymentStatus uint       `json:"employment_status" binding:"oneof=0 1 2"`
-	Sex              uint       `json:"sex" binding:"oneof=0 1"`
+	EmploymentStatus uint       `json:"employment_status" binding:"required,oneof=1 2 3"`
+	Sex              uint       `json:"sex" binding:"required,oneof=1 2"`
 	DOB              utils.Date `json:"dob" binding:"required"`
-	Relation         uint       `json:"relation" binding:"required,oneof=0 1 2"`
+	Relation         uint       `json:"relation" binding:"required,oneof=1 2 3"`
 }
 type CreateApplicantsRequest struct {
-	Applicants []CreateApplicants `json:"applicants"`
+	Applicants []CreateApplicants `json:"applicants" binding:"required,dive"`
 }
 
 type ApplicantsResponse struct {

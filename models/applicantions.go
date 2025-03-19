@@ -11,7 +11,7 @@ type Applications struct {
 	Applicant         Applicants `json:"-" gorm:"foreignKey:ApplicantID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	SchemeID          string     `json:"scheme_id" gorm:"index;not null"`
 	Scheme            Schemes    `json:"-" gorm:"foreignKey:SchemeID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	ApplicationStatus uint       `json:"application_status" gorm:"comment:'0: submitted, 1: approved, 2: rejected, 3: need review (due to applicant/scheme updates)'"`
+	ApplicationStatus uint       `json:"application_status" gorm:"comment:'1: submitted, 2: approved, 3: rejected, 4: need review (due to applicant/scheme updates)'"`
 	CommonTime
 }
 
@@ -24,7 +24,7 @@ type CreateApplicationRequest struct {
 	SchemeID    string `json:"scheme_id" binding:"required"`
 }
 type UpdateApplicationRequest struct {
-	ApplicationStatus uint `json:"application_status" binding:"oneof=0 1 2 3"`
+	ApplicationStatus uint `json:"application_status" binding:"required,oneof=1 2 3 4"`
 }
 type ApplicationsResponse struct {
 	ID                string             `json:"id"`
@@ -47,7 +47,7 @@ func (car *CreateApplicationRequest) ConvertToModel() Applications {
 		ID:                utils.GenerateUUID(),
 		ApplicantID:       car.ApplicantID,
 		SchemeID:          car.SchemeID,
-		ApplicationStatus: 0,
+		ApplicationStatus: 1,
 	}
 	return newApplication
 }

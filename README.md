@@ -5,8 +5,8 @@ This API, built with **Golang and Gin**, manages financial assistance schemes, a
 
 ## Features
 - **CRUD operations** for applicants, schemes, and applications.
-- **Eligibility verification** based on applicant data.
-- **RESTful API design** using Gin framework.
+- **Eligibility verification** based on applicant and scheme.
+- **RESTful API design** using Gin framework.1eee1eee1eee
 - **PostgreSQL support** for data storage.
 
 ## Prerequisites
@@ -85,21 +85,21 @@ For full API details, check the **Postman Collection**.
 ### Application constant 
 | column | Value | Meaning |
 |--------|----------|-------------|
-| employ status | 0 | unemployed |
-| employ status | 1 | employed |
-| employ status | 2 | in school |
+| employ status | 1 | unemployed |
+| employ status | 2 | employed |
+| employ status | 3 | in school |
 | employ status | 99 | no employment requiment |
-| sex | 0 | male |
-| sex | 1 | female |
+| sex | 1 | male |
+| sex | 2 | female |
 | sex | 99 | no sex requiment |
-| relation | 0 | children |
-| relation | 1 | spouse |
-| relation | 1 | parents |
+| relation | 1 | children |
+| relation | 2 | spouse |
+| relation | 3 | parents |
 | relation | 99 | no relation requiment |
-| application_status | 0 | submitted |
-| application_status | 1 | approved |
-| application_status | 2 | rejected |
-| application_status | 3 | need review |
+| application_status | 1 | submitted |
+| application_status | 2 | approved |
+| application_status | 3 | rejected |
+| application_status | 4 | need review |
 ---
 
 ## Testing

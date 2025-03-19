@@ -21,11 +21,11 @@ type CriteriaGroup struct {
 }
 type Criterias struct {
 	ID               string        `json:"id" gorm:"primaryKey"`
-	EmploymentStatus uint          `json:"employment_status" gorm:"comment:'0: unemployed, 1: employed, 2: in school, 99: no limitation'"`
-	Sex              uint          `json:"sex" gorm:"comment:'0: male, 1: female, 99:no limitation"`
+	EmploymentStatus uint          `json:"employment_status" gorm:"comment:'1: unemployed, 2: employed, 3: in school, 99: no limitation'"`
+	Sex              uint          `json:"sex" gorm:"comment:'1: male, 2: female, 99:no limitation"`
 	AgeUpperLimit    uint32        `json:"age_upper_limit" gorm:"default:999"`
 	AgeLowerLimit    uint32        `json:"age_lower_limit" gorm:"default:0"`
-	Relation         uint          `json:"relation" gorm:"comment:'0: children, 1: spouse, 2: parents, 99: no limitation'"`
+	Relation         uint          `json:"relation" gorm:"comment:'1: children, 2: spouse, 3: parents, 99: no limitation'"`
 	IsHouseHold      bool          `json:"is_household"`
 	CriteriaGroupID  string        `json:"criteria_group_id" gorm:"index;not null"`
 	CriteriaGroup    CriteriaGroup `json:"-" gorm:"foreignKey:CriteriaGroupID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -49,25 +49,25 @@ type GetEligibleSchemesRequest struct {
 	PaginationQuery
 }
 type CreateSchemesListRequest struct {
-	Schemes []CreateSchemesRequest `json:"schemes"`
+	Schemes []CreateSchemesRequest `json:"schemes" binding:"required,dive"`
 }
 type CreateSchemesRequest struct {
 	Name           string                        `json:"name" binding:"required"`
-	CriteriaGroups []CreateCriteriaGroupsRequest `json:"criteria_groups"`
-	Benefits       []CreateBenefitRequest        `json:"benefits"`
+	CriteriaGroups []CreateCriteriaGroupsRequest `json:"criteria_groups" binding:"required,dive"`
+	Benefits       []CreateBenefitRequest        `json:"benefits" binding:"required,dive"`
 }
 type CreateCriteriaGroupsRequest struct {
 	ID        string                  `json:"id"`
-	Criterias []CreateCriteriaRequest `json:"criterias"`
+	Criterias []CreateCriteriaRequest `json:"criterias" binding:"required,dive"`
 }
 type CreateCriteriaRequest struct {
 	ID               string `json:"id"`
-	EmploymentStatus uint   `json:"employment_status" binding:"oneof=0 1 2 99"`
-	Sex              uint   `json:"sex" binding:"oneof=0 1 99"`
+	EmploymentStatus uint   `json:"employment_status" binding:"required,oneof=1 2 3 99"`
+	Sex              uint   `json:"sex" binding:"required,oneof=1 2 99"`
 	AgeUpperLimit    uint32 `json:"age_upper_limit" binding:"gte=0"`
 	AgeLowerLimit    uint32 `json:"age_lower_limit" binding:"gte=0"`
-	Relation         uint   `json:"relation" binding:"oneof=0 1 2 99"`
-	IsHouseHold      bool   `json:"is_household" binding:"required"`
+	Relation         uint   `json:"relation" binding:"required,oneof=1 2 3 99"`
+	IsHouseHold      *bool  `json:"is_household" binding:"required"`
 }
 type CreateBenefitRequest struct {
 	ID     string  `json:"id"`
@@ -153,7 +153,7 @@ func (s *CreateSchemesRequest) ConvertToModel() Schemes {
 				Sex:              c.Sex,
 				AgeUpperLimit:    c.AgeUpperLimit,
 				AgeLowerLimit:    c.AgeLowerLimit,
-				IsHouseHold:      c.IsHouseHold,
+				IsHouseHold:      *c.IsHouseHold,
 				CriteriaGroupID:  groupId,
 			})
 		}
@@ -207,7 +207,7 @@ func (s *CreateSchemesRequest) IsValidScheme() (bool, error) {
 	var applicantCriteriaGroup []CreateCriteriaGroupsRequest
 	for _, group := range s.CriteriaGroups {
 		for _, criteria := range group.Criterias {
-			if !criteria.IsHouseHold {
+			if !*criteria.IsHouseHold {
 				applicantCriteriaGroup = append(applicantCriteriaGroup, group)
 				continue
 			}
@@ -218,7 +218,7 @@ func (s *CreateSchemesRequest) IsValidScheme() (bool, error) {
 	}
 	if len(applicantCriteriaGroup) == 1 {
 		for _, criteria := range applicantCriteriaGroup[0].Criterias {
-			if criteria.IsHouseHold {
+			if *criteria.IsHouseHold {
 				return false, errors.New("a scheme's criteria group criteria on applicant can not have any criteria that is on household")
 			}
 		}
@@ -242,7 +242,7 @@ func ConvertCriterias(newCriterias []CreateCriteriaRequest, groupID string) []Cr
 			AgeUpperLimit:    c.AgeUpperLimit,
 			AgeLowerLimit:    c.AgeLowerLimit,
 			Relation:         c.Relation,
-			IsHouseHold:      c.IsHouseHold,
+			IsHouseHold:      *c.IsHouseHold,
 			CriteriaGroupID:  groupID, // Assign to the given group
 		})
 	}

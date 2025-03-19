@@ -79,7 +79,7 @@ type SchemesResponse struct {
 	ID                     string                   `json:"id"`
 	Name                   string                   `json:"name"`
 	CriteriaGroupsResponse []CriteriaGroupsResponse `json:"criteria_groups"`
-	BenefitsResponse       []BenefitsResponse       `json:"benifits"`
+	BenefitsResponse       []BenefitsResponse       `json:"benefits"`
 }
 type CriteriaGroupsResponse struct {
 	ID                string              `json:"id"`

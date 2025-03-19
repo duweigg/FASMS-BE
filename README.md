@@ -19,16 +19,18 @@ This API, built with **Golang and Gin**, manages financial assistance schemes, a
 
 ### 1. Clone the Repository
 ```sh
-git clone https://github.com/your-repo.git
-cd your-repo
+git clone https://github.com/duweigg/FASMS-BE.git
+cd FASMS-BE
 ```
 
 ### 2. Install Dependencies
 ```sh
 go mod tidy
 ```
+### 3. create database "FASMS"
+in postgresql, create a database named "FASMS"
 
-### 3. Configure Environment Variables
+### 4. Configure Environment Variables
 Create a `.env` file:
 ```env
 PORT=8000
@@ -36,10 +38,10 @@ DB_URL="host=localhost user=postgres password=admin dbname=FASMS port=5432 sslmo
 ```
 or copy the file .env.example. and rename it as .env
 
-### 4. Run Database Migrations
+### 5. Run Database Migrations
 Using GORM, initialize the database:
 ```sh
-go run scripts/migrate.go
+go run migrate/migrate.go
 ```
 
 ### 5. Start the Server
@@ -62,8 +64,7 @@ go run main.go
 | `PUT` | `/api/applicants/{id}` | update existing applicant | The logic will compare the applicant's data, as well as households' data, so need to post the entire applicant data with households data including their UUIDs |
 | `DELETE` | `/api/applicants/{id}` | delete existing applicant | this will soft delete the applicant as well as his households, and updated related application record to "need review" status |
 | `GET` | `/api/schemes` | Retrieve all schemes | will need query param of page (default as 0) and page_size (default as 10). the first page is page 0 |
-| `GET` | `/api/schemes/eligible?applicant={id}` | Retrieve eligible schemes for an applicant | XXXXXXXXXXXXXX XXXXXXXXXXXXXXX XXXXX XXXXXXXXXXXX XXXXXXXXXXXXX XXXXXXXXXX XXXXXX XXXXXX 
-XXXXX XXXXXXXXXXXX XXXXXXXXXXXX XXXXXXXXXXX|
+| `GET` | `/api/schemes/eligible?applicant={id}` | Retrieve eligible schemes for an applicant | In order to be eligible, applicant must satisify all the criteria groups, each criteria group is considered as satisified if any of the criteria within the criteria groupo is satisified |
 | `POST` | `/api/schemes` | create new schemes | allow batch creatation. Please refer the payload in postman file |
 | `PUT` | `/api/schemes/{id}` | update existing schemes | The logic will compare the scheme's data, as well as all its criteria and benefits data, so need to post the entire scheme data with  criteria and benefits data including their UUIDs |
 | `DELETE` | `/api/schemes/{id}` | delete existing schemes | this will soft delete the scheme as well as its criteria and benefits, and updated related application record to "need review" status |
@@ -81,6 +82,7 @@ For full API details, check the **Postman Collection**.
 ### Applicants Table
 ![alt text](<FASMS - public.png>)
 
+### Application constant 
 | column | Value | Meaning |
 |--------|----------|-------------|
 | employ status | 0 | unemployed |

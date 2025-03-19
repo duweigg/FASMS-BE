@@ -3,15 +3,7 @@ Financial Assistance Scheme  Management System Backend
 
 
 TODO:
-
-verify the logic for eligibility checks    should be correct
-update put(update) applicant logic
 perpare database data
-
-proper endpoint authorisation checks in place and proper error handling logic in place. 
-data validation, and security practices
-
-
 
 
   Database Design: Quality of the database schema design. 

@@ -8,6 +8,7 @@ import (
 type Applicants struct {
 	ID               string       `json:"id" gorm:"primaryKey"`
 	Name             string       `json:"name"`
+	MaritalStatus    uint         `json:"marital_status"  gorm:"comment:'1: Single,, 2: Married,, 3: Widowed, 4:Divorced'"`
 	IC               string       `json:"ic" gorm:"unique,not null"`
 	EmploymentStatus uint         `json:"employment_status" gorm:"comment:'1: unemployed, 2: employed, 3: in school'"`
 	Sex              uint         `json:"sex" gorm:"comment:'1: male, 2: female"`
@@ -19,6 +20,7 @@ type Applicants struct {
 type Households struct {
 	ID               string     `json:"id" gorm:"primaryKey"`
 	Name             string     `json:"name"`
+	MaritalStatus    uint       `json:"marital_status"  gorm:"comment:'1: Single,, 2: Married,, 3: Widowed, 4:Divorced'"`
 	IC               string     `json:"ic"`
 	EmploymentStatus uint       `json:"employment_status" gorm:"comment:'1: unemployed, 2: employed, 3: in school'"`
 	Sex              uint       `json:"sex" gorm:"comment:'1: male, 2: female"`
@@ -34,6 +36,7 @@ type GetApplicantsRequest struct {
 }
 type CreateApplicants struct {
 	Name             string             `json:"name"  binding:"required"`
+	MaritalStatus    uint               `json:"marital_status" binding:"required,oneof=1 2 3 4"`
 	IC               string             `json:"ic"  binding:"required"`
 	EmploymentStatus uint               `json:"employment_status" binding:"required,oneof=1 2 3"`
 	Sex              uint               `json:"sex" binding:"required,oneof=1 2"`
@@ -43,6 +46,7 @@ type CreateApplicants struct {
 type CreateHouseholds struct {
 	ID               string     `json:"id" gorm:"primaryKey"`
 	Name             string     `json:"name" binding:"required"`
+	MaritalStatus    uint       `json:"marital_status" binding:"required,oneof=1 2 3 4"`
 	IC               string     `json:"ic"  binding:"required"`
 	EmploymentStatus uint       `json:"employment_status" binding:"required,oneof=1 2 3"`
 	Sex              uint       `json:"sex" binding:"required,oneof=1 2"`
@@ -56,6 +60,7 @@ type CreateApplicantsRequest struct {
 type ApplicantsResponse struct {
 	ID               string               `json:"id"`
 	Name             string               `json:"name"`
+	MaritalStatus    uint                 `json:"marital_status"`
 	IC               string               `json:"ic"`
 	EmploymentStatus uint                 `json:"employment_status"`
 	Sex              uint                 `json:"sex"`
@@ -65,6 +70,7 @@ type ApplicantsResponse struct {
 type HouseholdsResponse struct {
 	ID               string     `json:"id"`
 	Name             string     `json:"name"`
+	MaritalStatus    uint       `json:"marital_status"`
 	IC               string     `json:"ic"`
 	EmploymentStatus uint       `json:"employment_status"`
 	Sex              uint       `json:"sex"`
@@ -76,6 +82,7 @@ func (a *Applicants) ConvertToResponse() ApplicantsResponse {
 	applicants := ApplicantsResponse{
 		ID:               a.ID,
 		Name:             a.Name,
+		MaritalStatus:    a.MaritalStatus,
 		IC:               a.IC,
 		EmploymentStatus: a.EmploymentStatus,
 		Sex:              a.Sex,
@@ -85,6 +92,7 @@ func (a *Applicants) ConvertToResponse() ApplicantsResponse {
 		applicants.Households = append(applicants.Households, HouseholdsResponse{
 			ID:               household.ID,
 			Name:             household.Name,
+			MaritalStatus:    household.MaritalStatus,
 			IC:               household.IC,
 			EmploymentStatus: household.EmploymentStatus,
 			Sex:              household.Sex,
@@ -103,6 +111,7 @@ func (a *CreateApplicantsRequest) ConvertToModel() []Applicants {
 			ID:               utils.GenerateUUID(),
 			IC:               appReq.IC,
 			Name:             appReq.Name,
+			MaritalStatus:    appReq.MaritalStatus,
 			EmploymentStatus: appReq.EmploymentStatus,
 			Sex:              appReq.Sex,
 			DOB:              appReq.DOB.ToTime(),
@@ -113,6 +122,7 @@ func (a *CreateApplicantsRequest) ConvertToModel() []Applicants {
 			households = append(households, Households{
 				ID:               utils.GenerateUUID(),
 				Name:             household.Name,
+				MaritalStatus:    household.MaritalStatus,
 				IC:               household.IC,
 				EmploymentStatus: household.EmploymentStatus,
 				Sex:              household.Sex,

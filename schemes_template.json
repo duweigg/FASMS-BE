@@ -8,6 +8,7 @@
             {
               "sex": 99,
               "employment_status": 1,
+              "marital_status": 1,
               "relation": 99,
               "is_household": false
             }
@@ -30,6 +31,7 @@
             {
               "sex": 99,
               "employment_status": 3,
+              "marital_status": 99,
               "age_upper_limit": 12,
               "relation": 1,
               "is_household": true
@@ -40,18 +42,8 @@
           "criterias": [
             {
               "sex": 99,
-              "employment_status": 3,
-              "age_lower_limit": 30,
-              "relation": 1,
-              "is_household": true
-            }
-          ]
-        },
-        {
-          "criterias": [
-            {
-              "sex": 99,
               "employment_status": 1,
+              "marital_status": 2,
               "relation": 99,
               "is_household": false
             }

@@ -22,6 +22,7 @@ type CriteriaGroup struct {
 type Criterias struct {
 	ID               string        `json:"id" gorm:"primaryKey"`
 	EmploymentStatus uint          `json:"employment_status" gorm:"comment:'1: unemployed, 2: employed, 3: in school, 99: no limitation'"`
+	MaritalStatus    uint          `json:"marital_status"  gorm:"comment:'1: Single,, 2: Married,, 3: Widowed, 4:Divorced, 99: no limitation'"`
 	Sex              uint          `json:"sex" gorm:"comment:'1: male, 2: female, 99:no limitation"`
 	AgeUpperLimit    uint32        `json:"age_upper_limit" gorm:"default:999"`
 	AgeLowerLimit    uint32        `json:"age_lower_limit" gorm:"default:0"`
@@ -63,6 +64,7 @@ type CreateCriteriaGroupsRequest struct {
 type CreateCriteriaRequest struct {
 	ID               string `json:"id"`
 	EmploymentStatus uint   `json:"employment_status" binding:"required,oneof=1 2 3 99"`
+	MaritalStatus    uint   `json:"marital_status" binding:"required,oneof=1 2 3 4 99"`
 	Sex              uint   `json:"sex" binding:"required,oneof=1 2 99"`
 	AgeUpperLimit    uint32 `json:"age_upper_limit" binding:"gte=0"`
 	AgeLowerLimit    uint32 `json:"age_lower_limit" binding:"gte=0"`
@@ -88,6 +90,7 @@ type CriteriaGroupsResponse struct {
 type CriteriasResponse struct {
 	ID               string `json:"id"`
 	EmploymentStatus uint   `json:"employment_status"`
+	MaritalStatus    uint   `json:"marital_status"`
 	Sex              uint   `json:"sex"`
 	AgeUpperLimit    uint32 `json:"age_upper_limit"`
 	AgeLowerLimit    uint32 `json:"age_lower_limit"`
@@ -115,6 +118,7 @@ func (s *Schemes) ConvertToResponse() SchemesResponse {
 			groupResponse.CriteriasResponse = append(groupResponse.CriteriasResponse, CriteriasResponse{
 				ID:               criteria.ID,
 				EmploymentStatus: criteria.EmploymentStatus,
+				MaritalStatus:    criteria.MaritalStatus,
 				Sex:              criteria.Sex,
 				AgeUpperLimit:    criteria.AgeUpperLimit,
 				AgeLowerLimit:    criteria.AgeLowerLimit,
@@ -150,6 +154,7 @@ func (s *CreateSchemesRequest) ConvertToModel() Schemes {
 			criterias = append(criterias, Criterias{
 				ID:               utils.GenerateUUID(),
 				EmploymentStatus: c.EmploymentStatus,
+				MaritalStatus:    c.MaritalStatus,
 				Sex:              c.Sex,
 				AgeUpperLimit:    c.AgeUpperLimit,
 				AgeLowerLimit:    c.AgeLowerLimit,
@@ -239,6 +244,7 @@ func ConvertCriterias(newCriterias []CreateCriteriaRequest, groupID string) []Cr
 		convertedCriterias = append(convertedCriterias, Criterias{
 			ID:               criteriaID,
 			EmploymentStatus: c.EmploymentStatus,
+			MaritalStatus:    c.MaritalStatus,
 			Sex:              c.Sex,
 			AgeUpperLimit:    c.AgeUpperLimit,
 			AgeLowerLimit:    c.AgeLowerLimit,

@@ -98,7 +98,8 @@ func IsApplicantEligible(applicant Applicants, criteriaGroup CriteriaGroup) bool
 		// log.Printf("sex: %v == %v", criteria.Sex, applicant.Sex)
 		if (age >= criteria.AgeLowerLimit && age <= criteria.AgeUpperLimit) &&
 			(criteria.EmploymentStatus == 99 || applicant.EmploymentStatus == criteria.EmploymentStatus) &&
-			(criteria.Sex == 99 || applicant.Sex == criteria.Sex) {
+			(criteria.Sex == 99 || applicant.Sex == criteria.Sex) &&
+			(criteria.MaritalStatus == 99 || applicant.MaritalStatus == criteria.MaritalStatus) {
 			return true
 		}
 	}
@@ -123,7 +124,8 @@ func IsHouseholdEligible(criteriaGroups []CriteriaGroup, households []Households
 			if age >= criteria.AgeLowerLimit && age <= criteria.AgeUpperLimit &&
 				(criteria.EmploymentStatus == 99 || household.EmploymentStatus == criteria.EmploymentStatus) &&
 				(criteria.Sex == 99 || household.Sex == criteria.Sex) &&
-				(criteria.Relation == 99 || household.Relation == criteria.Relation) {
+				(criteria.Relation == 99 || household.Relation == criteria.Relation) &&
+				(criteria.MaritalStatus == 99 || household.MaritalStatus == criteria.MaritalStatus) {
 
 				// Mark household as used
 				usedHouseholds[household.ID] = true

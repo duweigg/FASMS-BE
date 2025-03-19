@@ -4,6 +4,7 @@
       "name": "James",
       "ic": "S9036948G",
       "employment_status": 1,
+      "marital_status": 1,
       "sex": 1,
       "dob": "1990-07-01",
       "households": []
@@ -12,6 +13,7 @@
       "name": "Mary",
       "ic": "S8436948G",
       "employment_status": 1,
+      "marital_status": 2,
       "sex": 2,
       "dob": "1984-10-06",
       "households": [
@@ -19,6 +21,7 @@
           "name": "Gwen",
           "ic": "S1656948G",
           "employment_status": 3,
+          "marital_status": 1,
           "sex": 2,
           "dob": "2016-02-01",
           "relation": 1
@@ -27,6 +30,7 @@
           "name": "Jayden",
           "ic": "S1856948G",
           "employment_status": 3,
+          "marital_status": 1,
           "sex": 1,
           "dob": "2018-03-15",
           "relation": 1

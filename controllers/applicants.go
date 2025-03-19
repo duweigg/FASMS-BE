@@ -160,6 +160,7 @@ func (ac *ApplicantController) UpdateApplicant(c *gin.Context) {
 	applicant.Name = updatedApplicant.Name
 	applicant.IC = updatedApplicant.IC
 	applicant.EmploymentStatus = updatedApplicant.EmploymentStatus
+	applicant.MaritalStatus = updatedApplicant.MaritalStatus
 	applicant.Sex = updatedApplicant.Sex
 	applicant.DOB = updatedApplicant.DOB.ToTime()
 
@@ -284,6 +285,7 @@ func updateHouseHolds(tx *gorm.DB, updatedHousehold []models.CreateHouseholds, e
 			updateData := map[string]interface{}{
 				"name":              newHousehold.Name,
 				"employment_status": newHousehold.EmploymentStatus,
+				"marital_status":    newHousehold.MaritalStatus,
 				"sex":               newHousehold.Sex,
 				"dob":               newHousehold.DOB.ToTime(),
 				"relation":          newHousehold.Relation,

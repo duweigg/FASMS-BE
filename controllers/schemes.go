@@ -473,6 +473,7 @@ func UpdateCriterias(tx *gorm.DB, existingCriterias []models.Criterias, newCrite
 
 			updateData := map[string]interface{}{
 				"employment_status": newCriteria.EmploymentStatus,
+				"marital_status":    newCriteria.MaritalStatus,
 				"sex":               newCriteria.Sex,
 				"age_upper_limit":   newCriteria.AgeUpperLimit,
 				"age_lower_limit":   newCriteria.AgeLowerLimit,
@@ -487,6 +488,7 @@ func UpdateCriterias(tx *gorm.DB, existingCriterias []models.Criterias, newCrite
 			}
 
 			existingCriteria.EmploymentStatus = newCriteria.EmploymentStatus
+			existingCriteria.MaritalStatus = newCriteria.MaritalStatus
 			existingCriteria.Sex = newCriteria.Sex
 			existingCriteria.AgeUpperLimit = newCriteria.AgeUpperLimit
 			existingCriteria.AgeLowerLimit = newCriteria.AgeLowerLimit
@@ -499,6 +501,7 @@ func UpdateCriterias(tx *gorm.DB, existingCriterias []models.Criterias, newCrite
 			createCriterias = append(createCriterias, models.Criterias{
 				ID:               criteriaID,
 				EmploymentStatus: newCriteria.EmploymentStatus,
+				MaritalStatus:    newCriteria.MaritalStatus,
 				Sex:              newCriteria.Sex,
 				AgeUpperLimit:    newCriteria.AgeUpperLimit,
 				AgeLowerLimit:    newCriteria.AgeLowerLimit,

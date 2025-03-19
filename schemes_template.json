@@ -1,11 +1,19 @@
 {
   "schemes": [
     {
-      "id": "01913b89-9a43-7163-8757-01cc254783f3",
-      "name": "Retrenchment Assistance Scheme",
-      "criteria": {
-        "employment_status": "unemployed"
-      },
+      "name": "Retrenchment Assistance Scheme1",
+      "criteria_groups": [
+        {
+          "criterias": [
+            {
+              "sex": 99,
+              "employment_status": 1,
+              "relation": 99,
+              "is_household": false
+            }
+          ]
+        }
+      ],
       "benefits": [
         {
           "id": "01913b8b-9b12-7d2c-a1fa-ea613b802ebc",
@@ -15,14 +23,48 @@
       ]
     },
     {
-      "id": "01913b89-befc-7ae3-bb37-3079aa7f1be0",
-      "name": "Retrenchment Assistance Scheme (families)",
-      "criteria": {
-        "employment_status": "unemployed",
-        "has_children": {
-          "school_level": "== primary"
+      "name": "Retrenchment Assistance Scheme (families1)",
+      "criteria_groups": [
+        {
+          "criterias": [
+            {
+              "sex": 99,
+              "employment_status": 3,
+              "age_upper_limit": 12,
+              "relation": 1,
+              "is_household": true
+            }
+          ]
+        },
+        {
+          "criterias": [
+            {
+              "sex": 99,
+              "employment_status": 3,
+              "age_lower_limit": 30,
+              "relation": 1,
+              "is_household": true
+            }
+          ]
+        },
+        {
+          "criterias": [
+            {
+              "sex": 99,
+              "employment_status": 1,
+              "relation": 99,
+              "is_household": false
+            }
+          ]
         }
-      }
+      ],
+      "benefits": [
+        {
+          "id": "01913b8b-9b12-7d2c-a1fa-ea613b802ebc",
+          "name": "SkillsFuture Credits",
+          "amount": 500.00
+        }
+      ]
     }
   ]
 }

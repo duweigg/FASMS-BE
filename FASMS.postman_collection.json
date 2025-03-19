@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "0a71e2b9-bd68-4abe-8a9d-727f7de68e20",
+		"_postman_id": "0a72dcd9-e74e-4760-bac7-41439a06516c",
 		"name": "FASMS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "43097425",
-		"_collection_link": "https://orange-spaceship-523579.postman.co/workspace/Team-Workspace~8e2dac60-b246-4946-8322-db85e8aaf787/collection/43097425-0a71e2b9-bd68-4abe-8a9d-727f7de68e20?action=share&source=collection_link&creator=43097425"
+		"_collection_link": "https://orange-spaceship-523579.postman.co/workspace/Team-Workspace~8e2dac60-b246-4946-8322-db85e8aaf787/collection/43097425-0a72dcd9-e74e-4760-bac7-41439a06516c?action=share&source=collection_link&creator=43097425"
 	},
 	"item": [
 		{
@@ -26,7 +26,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"applicants\": [\r\n        {\r\n            \"name\": \"James\",\r\n            \"ic\":\"S4256845G\",\r\n            \"employment_status\": 0,\r\n            \"sex\": 0,\r\n            \"dob\": \"1990-07-01\",\r\n            \"households\": []\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n  \"applicants\": [\r\n    {\r\n      \"name\": \"James\",\r\n      \"ic\": \"S9036948G\",\r\n      \"employment_status\": 1,\r\n      \"sex\": 1,\r\n      \"dob\": \"1990-07-01\",\r\n      \"households\": []\r\n    },\r\n    {\r\n      \"name\": \"Mary\",\r\n      \"ic\": \"S8436948G\",\r\n      \"employment_status\": 1,\r\n      \"sex\": 2,\r\n      \"dob\": \"1984-10-06\",\r\n      \"households\": [\r\n        {\r\n          \"name\": \"Gwen\",\r\n          \"ic\": \"S1656948G\",\r\n          \"employment_status\": 3,\r\n          \"sex\": 2,\r\n          \"dob\": \"2016-02-01\",\r\n          \"relation\": 1\r\n        },\r\n        {\r\n          \"name\": \"Jayden\",\r\n          \"ic\": \"S1856948G\",\r\n          \"employment_status\": 3,\r\n          \"sex\": 1,\r\n          \"dob\": \"2018-03-15\",\r\n          \"relation\": 1\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -44,14 +44,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "\r\n        {\r\n            \"id\": \"89e3fce2-efa0-44ab-9ac5-9c52aeeda821\",\r\n            \"name\": \"Mary\",\r\n            \"employment_status\": 0,\r\n            \"sex\": 1,\r\n            \"dob\": \"1984-10-06T00:00:00Z\",\r\n            \"households\": [\r\n                {\r\n                    \"id\": \"61dd84d5-ad4b-4a37-9abc-b54f03c42058\",\r\n                    \"name\": \"Gwen\",\r\n                    \"employment_status\": 3,\r\n                    \"sex\": 1,\r\n                    \"dob\": \"1993-02-01T00:00:00Z\",\r\n                    \"relation\": 0\r\n                },\r\n                {\r\n                    \"id\": \"848b16e7-03b8-4277-b424-1b7875838bbf\",\r\n                    \"name\": \"Jayden\",\r\n                    \"employment_status\": 3,\r\n                    \"sex\": 0,\r\n                    \"dob\": \"2018-03-15T00:00:00Z\",\r\n                    \"relation\": 0\r\n                }\r\n            ]\r\n        }",
+							"raw": "\r\n        {\r\n            \"id\": \"2ce1ce7c-58e5-42b1-9f40-091bc17dba9d\",\r\n            \"name\": \"Mary\",\r\n            \"ic\": \"S8436948G\",\r\n            \"employment_status\": 1,\r\n            \"sex\": 2,\r\n            \"dob\": \"1984-10-06\",\r\n            \"households\": [\r\n                {\r\n                    \"id\": \"cd8dfcd8-5f60-483b-bc1d-831eeb96a81d\",\r\n                    \"name\": \"Gwen12\",\r\n                    \"ic\": \"S1656948G\",\r\n                    \"employment_status\": 3,\r\n                    \"sex\": 2,\r\n                    \"dob\": \"2016-02-01\",\r\n                    \"relation\": 1\r\n                },\r\n                {\r\n                    \"id\": \"7ceb7049-10d0-4528-a58f-33495e1229c9\",\r\n                    \"name\": \"Jayde33n\",\r\n                    \"ic\": \"S1856948G\",\r\n                    \"employment_status\": 3,\r\n                    \"sex\": 1,\r\n                    \"dob\": \"2018-03-15\",\r\n                    \"relation\": 1\r\n                }\r\n            ]\r\n        }",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{domain}}/api/applicants/5de6e404-6d49-4180-9a9a-4342cc46aadf"
+						"url": "{{domain}}/api/applicants/2ce1ce7c-58e5-42b1-9f40-091bc17dba9d"
 					},
 					"response": []
 				},
@@ -60,7 +60,7 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{domain}}/api/applicants/5de6e404-6d49-4180-9a9a-4342cc46aadf"
+						"url": "{{domain}}/api/applicants/648256d9-bb8c-4345-986e-b032683b86d7"
 					},
 					"response": []
 				}
@@ -84,7 +84,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{domain}}/api/schemes/eligible?applicant=89e3fce2-efa0-44ab-9ac5-9c52aeeda821",
+							"raw": "{{domain}}/api/schemes/eligible?applicant=2ce1ce7c-58e5-42b1-9f40-091bc17dba9d",
 							"host": [
 								"{{domain}}"
 							],
@@ -96,7 +96,7 @@
 							"query": [
 								{
 									"key": "applicant",
-									"value": "89e3fce2-efa0-44ab-9ac5-9c52aeeda821"
+									"value": "2ce1ce7c-58e5-42b1-9f40-091bc17dba9d"
 								}
 							]
 						}
@@ -110,7 +110,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"schemes\": [\r\n    {\r\n      \"name\": \"Retrenchment Assistance Scheme1\",\r\n      \"criteria_groups\":[\r\n        {\r\n            \"criterias\":[\r\n                {\r\n                    \"sex\":99,\r\n                    \"employment_status\": 0,\r\n                    \"is_household\":false\r\n                }\r\n            ]\r\n        }\r\n      ],\r\n      \"benefits\": [\r\n        {\r\n          \"id\": \"01913b8b-9b12-7d2c-a1fa-ea613b802ebc\",\r\n          \"name\": \"SkillsFuture Credits\",\r\n          \"amount\": 500.00\r\n        }\r\n      ]\r\n    },\r\n    {\r\n      \"name\": \"Retrenchment Assistance Scheme (families1)\",\r\n      \"criteria_groups\":[\r\n        {\r\n            \"criterias\": [\r\n                {\r\n                    \"sex\":99,\r\n                    \"employment_status\": 3,\r\n                    \"age_upper_limit\":12,\r\n                    \"relation\":0,\r\n                    \"is_household\":true\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"criterias\": [\r\n                {\r\n                    \"sex\":99,\r\n                    \"employment_status\": 3,\r\n                    \"age_lower_limit\":30,\r\n                    \"relation\":0,\r\n                    \"is_household\":true\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"criterias\":[\r\n                {\r\n                    \"sex\":99,\r\n                    \"employment_status\": 0,\r\n                    \"is_household\":false\r\n                }\r\n            ]\r\n        }\r\n      ],\r\n      \"benefits\": [\r\n        {\r\n          \"id\": \"01913b8b-9b12-7d2c-a1fa-ea613b802ebc\",\r\n          \"name\": \"SkillsFuture Credits\",\r\n          \"amount\": 500.00\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+							"raw": "{\r\n  \"schemes\": [\r\n    {\r\n      \"name\": \"Retrenchment Assistance Scheme1\",\r\n      \"criteria_groups\":[\r\n        {\r\n            \"criterias\":[\r\n                {\r\n                    \"sex\":99,\r\n                    \"employment_status\": 1,\r\n                    \"relation\":99,\r\n                    \"is_household\":false\r\n                }\r\n            ]\r\n        }\r\n      ],\r\n      \"benefits\": [\r\n        {\r\n          \"id\": \"01913b8b-9b12-7d2c-a1fa-ea613b802ebc\",\r\n          \"name\": \"SkillsFuture Credits\",\r\n          \"amount\": 500.00\r\n        }\r\n      ]\r\n    },\r\n    {\r\n      \"name\": \"Retrenchment Assistance Scheme (families1)\",\r\n      \"criteria_groups\":[\r\n        {\r\n            \"criterias\": [\r\n                {\r\n                    \"sex\":99,\r\n                    \"employment_status\": 3,\r\n                    \"age_upper_limit\":12,\r\n                    \"relation\":1,\r\n                    \"is_household\":true\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"criterias\": [\r\n                {\r\n                    \"sex\":99,\r\n                    \"employment_status\": 3,\r\n                    \"age_lower_limit\":30,\r\n                    \"relation\":1,\r\n                    \"is_household\":true\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"criterias\":[\r\n                {\r\n                    \"sex\":99,\r\n                    \"employment_status\": 1,\r\n                    \"relation\":99,\r\n                    \"is_household\":false\r\n                }\r\n            ]\r\n        }\r\n      ],\r\n      \"benefits\": [\r\n        {\r\n          \"id\": \"01913b8b-9b12-7d2c-a1fa-ea613b802ebc\",\r\n          \"name\": \"SkillsFuture Credits\",\r\n          \"amount\": 500.00\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -126,7 +126,7 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{domain}}/api/schemes/be7fd61f-909f-4c94-91f3-f9a47054fe02"
+						"url": "{{domain}}/api/schemes/23fdda42-5d0c-4e49-b48e-33307cd014bd"
 					},
 					"response": []
 				},
@@ -137,14 +137,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"schemes\": [\r\n        {\r\n            \"id\": \"cab67a36-18af-4a65-97fb-3330a32a7a74\",\r\n            \"name\": \"Retrenchment Assistance Scheme\",\r\n            \"criteria_groups\": [\r\n                {\r\n                    \"id\": \"abbb07e2-3bf3-4407-8b74-b52bd8d20e42\",\r\n                    \"criterias\": [\r\n                        {\r\n                            \"id\": \"3bd916fe-e3ea-4a97-97cf-297b442aaece\",\r\n                            \"employment_status\": 0,\r\n                            \"sex\": 99,\r\n                            \"age_upper_limit\": 999,\r\n                            \"age_lower_limit\": 0,\r\n                            \"is_household\": false\r\n                        }\r\n                    ]\r\n                }\r\n            ],\r\n            \"benifits\": [\r\n                {\r\n                    \"id\": \"46533f7c-e41c-4968-b5c1-31b0681b7723\",\r\n                    \"name\": \"SkillsFuture Credits\",\r\n                    \"amount\": 500\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": \"e7b89805-ef47-408c-8447-1e1b7da5f428\",\r\n            \"name\": \"Retrenchment Assistance Scheme (families)\",\r\n            \"criteria_groups\": [\r\n                {\r\n                    \"id\": \"37ca7f48-2638-4fc9-979c-a91e95617f10\",\r\n                    \"criterias\": [\r\n                        {\r\n                            \"id\": \"6f666ca8-afe4-463f-8f10-04f41a93bc64\",\r\n                            \"employment_status\": 3,\r\n                            \"sex\": 99,\r\n                            \"age_upper_limit\": 12,\r\n                            \"age_lower_limit\": 0,\r\n                            \"is_household\": true\r\n                        }\r\n                    ]\r\n                },\r\n                {\r\n                    \"id\": \"ef7e6806-0489-40c7-b394-f4fabfa9f8a1\",\r\n                    \"criterias\": [\r\n                        {\r\n                            \"id\": \"1cb97428-0a62-4c14-96bc-5426f8933ff6\",\r\n                            \"employment_status\": 3,\r\n                            \"sex\": 99,\r\n                            \"age_upper_limit\": 50,\r\n                            \"age_lower_limit\": 0,\r\n                            \"is_household\": true\r\n                        }\r\n                    ]\r\n                },\r\n                {\r\n                    \"id\": \"065179d9-abd7-4076-997c-641269f04256\",\r\n                    \"criterias\": [\r\n                        {\r\n                            \"id\": \"2ba3593a-cfdd-480e-a8c6-6c8dd9dca3bc\",\r\n                            \"employment_status\": 0,\r\n                            \"sex\": 99,\r\n                            \"age_upper_limit\": 999,\r\n                            \"age_lower_limit\": 0,\r\n                            \"is_household\": false\r\n                        }\r\n                    ]\r\n                }\r\n            ],\r\n            \"benifits\": [\r\n                {\r\n                    \"id\": \"56eb2401-e63e-4342-8983-3e32c562d800\",\r\n                    \"name\": \"SkillsFuture Credits\",\r\n                    \"amount\": 500\r\n                }\r\n            ]\r\n        }\r\n    ],\r\n    \"total\": 2\r\n}",
+							"raw": "\r\n        {\r\n            \"id\": \"aef63737-1145-430f-b387-c1544322efd8\",\r\n            \"name\": \"Retrenchment Assistance Scheme (families1)\",\r\n            \"criteria_groups\": [\r\n                {\r\n                    \"id\": \"b449d084-0256-472c-a395-61a49fba08da\",\r\n                    \"criterias\": [\r\n                        {\r\n                            \"id\": \"b9172ce6-4432-4745-96a7-b4ac9c316900\",\r\n                            \"employment_status\": 3,\r\n                            \"sex\": 99,\r\n                            \"age_upper_limit\": 12,\r\n                            \"age_lower_limit\": 0,\r\n                            \"relation\": 1,\r\n                            \"is_household\": true\r\n                        }\r\n                    ]\r\n                },\r\n                {\r\n                    \"id\": \"22b355db-cdac-4f4e-99d1-4fcd6bb71663\",\r\n                    \"criterias\": [\r\n                        {\r\n                            \"id\": \"679bb465-52b1-4b68-99c3-e4437d83c5e3\",\r\n                            \"employment_status\": 1,\r\n                            \"sex\": 99,\r\n                            \"age_upper_limit\": 999,\r\n                            \"age_lower_limit\": 0,\r\n                            \"relation\": 99,\r\n                            \"is_household\": false\r\n                        }\r\n                    ]\r\n                }\r\n            ],\r\n            \"benefits\": [\r\n                {\r\n                    \"id\": \"80a8b60a-0bc2-41a0-a587-5894b2d4a78d\",\r\n                    \"name\": \"SkillsFuture Credits\",\r\n                    \"amount\": 500\r\n                }\r\n            ]\r\n        }",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{domain}}/api/schemes/478fd545-c2de-42dd-bffa-ce4468939cc0"
+						"url": "{{domain}}/api/schemes/aef63737-1145-430f-b387-c1544322efd8"
 					},
 					"response": []
 				}
@@ -169,7 +169,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"applicant_id\":\"89e3fce2-efa0-44ab-9ac5-9c52aeeda821\",\r\n    \"scheme_id\":\"0d39e65b-edde-438f-8408-9e3153710f3e\"\r\n}",
+							"raw": "{\r\n    \"applicant_id\":\"2ce1ce7c-58e5-42b1-9f40-091bc17dba9d\",\r\n    \"scheme_id\":\"aef63737-1145-430f-b387-c1544322efd8\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -187,14 +187,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"application_status\":4\r\n}",
+							"raw": "{\r\n    \"application_status\":2\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{domain}}/api/applications/b64899b1-ffc7-44fd-aded-ebff3aa3801f"
+						"url": "{{domain}}/api/applications/4b686a83-fa7b-45e4-9d48-95cfe0fb4084"
 					},
 					"response": []
 				},
@@ -203,7 +203,7 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{domain}}/api/applications/4e2c765e-c762-4397-a174-9622c44da948"
+						"url": "{{domain}}/api/applications/4b686a83-fa7b-45e4-9d48-95cfe0fb4084"
 					},
 					"response": []
 				}

@@ -11,6 +11,7 @@ type Applicants struct {
 	MaritalStatus    uint         `json:"marital_status"  gorm:"comment:'1: Single,, 2: Married,, 3: Widowed, 4:Divorced'"`
 	IC               string       `json:"ic" gorm:"unique,not null"`
 	EmploymentStatus uint         `json:"employment_status" gorm:"comment:'1: unemployed, 2: employed, 3: in school'"`
+	UnempolyedSince  *time.Time   `json:"unployed_since"`
 	Sex              uint         `json:"sex" gorm:"comment:'1: male, 2: female"`
 	DOB              time.Time    `gorm:"type:date" json:"dob"`
 	Households       []Households `json:"households" gorm:"foreignKey:ApplicantID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -41,6 +42,7 @@ type CreateApplicants struct {
 	EmploymentStatus uint               `json:"employment_status" binding:"required,oneof=1 2 3"`
 	Sex              uint               `json:"sex" binding:"required,oneof=1 2"`
 	DOB              utils.Date         `json:"dob" binding:"required"`
+	UnempolyedSince  utils.Date         `json:"unployed_since"`
 	Households       []CreateHouseholds `json:"households"`
 }
 type CreateHouseholds struct {
@@ -63,6 +65,7 @@ type ApplicantsResponse struct {
 	MaritalStatus    uint                 `json:"marital_status"`
 	IC               string               `json:"ic"`
 	EmploymentStatus uint                 `json:"employment_status"`
+	UnempolyedSince  utils.Date           `json:"unemployed_since"`
 	Sex              uint                 `json:"sex"`
 	DOB              utils.Date           `json:"dob"`
 	Households       []HouseholdsResponse `json:"households"`
@@ -85,6 +88,7 @@ func (a *Applicants) ConvertToResponse() ApplicantsResponse {
 		MaritalStatus:    a.MaritalStatus,
 		IC:               a.IC,
 		EmploymentStatus: a.EmploymentStatus,
+		UnempolyedSince:  utils.Date(*a.UnempolyedSince),
 		Sex:              a.Sex,
 		DOB:              utils.Date(a.DOB),
 	}
@@ -107,12 +111,14 @@ func (a *CreateApplicantsRequest) ConvertToModel() []Applicants {
 
 	var applicants []Applicants
 	for _, appReq := range a.Applicants {
+		unemployedSince := appReq.UnempolyedSince.ToTime()
 		applicant := Applicants{
 			ID:               utils.GenerateUUID(),
 			IC:               appReq.IC,
 			Name:             appReq.Name,
 			MaritalStatus:    appReq.MaritalStatus,
 			EmploymentStatus: appReq.EmploymentStatus,
+			UnempolyedSince:  &unemployedSince,
 			Sex:              appReq.Sex,
 			DOB:              appReq.DOB.ToTime(),
 		}
@@ -154,4 +160,9 @@ func (h *Households) GetAge() uint32 {
 		age--
 	}
 	return uint32(age)
+}
+
+func (a *Applicants) UnemployedDays() uint32 {
+	duration := time.Since(*a.UnempolyedSince)
+	return uint32(duration.Hours() / 24)
 }

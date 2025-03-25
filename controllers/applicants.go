@@ -160,6 +160,10 @@ func (ac *ApplicantController) UpdateApplicant(c *gin.Context) {
 	applicant.Name = updatedApplicant.Name
 	applicant.IC = updatedApplicant.IC
 	applicant.EmploymentStatus = updatedApplicant.EmploymentStatus
+
+	umployedSince := updatedApplicant.UnempolyedSince.ToTime()
+	applicant.UnempolyedSince = &umployedSince
+
 	applicant.MaritalStatus = updatedApplicant.MaritalStatus
 	applicant.Sex = updatedApplicant.Sex
 	applicant.DOB = updatedApplicant.DOB.ToTime()

@@ -39,7 +39,7 @@ func (sc *SchemeController) GetSchemesList(c *gin.Context) {
 	}
 
 	// Fetch applicants and return 500 Internal Server Error on failure
-	var query = sc.DB.Offset(schemesRequest.Page * schemesRequest.PageSize).Limit(schemesRequest.PageSize)
+	var query = sc.DB.Offset(schemesRequest.Page * schemesRequest.PageSize).Limit(schemesRequest.PageSize).Order("id")
 	if err := query.Preload("CriteriaGroups.Criterias").Preload("Benefits").Find(&schemes).Error; err != nil {
 		log.Printf("Database error fetching scheme list: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch scheme list"})
@@ -49,6 +49,7 @@ func (sc *SchemeController) GetSchemesList(c *gin.Context) {
 	if len(schemes) == 0 {
 		log.Printf("No scheme found")
 		c.JSON(http.StatusNotFound, gin.H{"error": "No scheme found"})
+		// c.JSON(http.StatusOK, gin.H{"schemes": []models.SchemesResponse{}, "total": 0})
 		return
 	}
 	// find total number of applications for pagenation
@@ -96,7 +97,7 @@ func (sc *SchemeController) GetEligibleSchemesList(c *gin.Context) {
 	}
 
 	// Fetch schemes and return 500 Internal Server Error on failure
-	if err := sc.DB.Preload("CriteriaGroups.Criterias").Preload("Benefits").Find(&schemes).Error; err != nil {
+	if err := sc.DB.Preload("CriteriaGroups.Criterias").Preload("Benefits").Order("id").Find(&schemes).Error; err != nil {
 		log.Printf("Database error fetching scheem list: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch scheem list"})
 		return
@@ -260,9 +261,7 @@ func (sc *SchemeController) DeleteScheme(c *gin.Context) {
 	}
 
 	// update applications involved
-	result := tx.Model(&models.Applications{}).
-		Where("scheme_id = ?", schemeID).
-		Update("application_status", 3)
+	result := tx.Where("scheme_id = ?", schemeID).Delete(&models.Applications{})
 
 	// Check if any rows were affected
 	if result.Error != nil {

@@ -38,7 +38,7 @@ func (ac *ApplicantController) GetApplicantsList(c *gin.Context) {
 	}
 
 	// Fetch applicants and return 500 Internal Server Error on failure
-	var query = ac.DB.Offset(applicantsRequest.Page * applicantsRequest.PageSize).Limit(applicantsRequest.PageSize)
+	var query = ac.DB.Offset(applicantsRequest.Page * applicantsRequest.PageSize).Limit(applicantsRequest.PageSize).Order("id")
 	if err := query.Preload("Households").Find(&applicants).Error; err != nil {
 		log.Printf("Database error fetching applicants list: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch applicants list"})
@@ -47,7 +47,8 @@ func (ac *ApplicantController) GetApplicantsList(c *gin.Context) {
 
 	if len(applicants) == 0 {
 		log.Printf("No applicants found")
-		c.JSON(http.StatusNotFound, gin.H{"error": "No applicants found"})
+		// c.JSON(http.StatusNotFound, gin.H{"error": "No applicants found"})
+		c.JSON(http.StatusOK, gin.H{"applicants": []models.ApplicantsResponse{}, "total": 0})
 		return
 	}
 
@@ -241,9 +242,7 @@ func (ac *ApplicantController) DeleteApplicant(c *gin.Context) {
 	}
 
 	// update applications involved
-	result := tx.Model(&models.Applications{}).
-		Where("applicant_id = ?", applicantID).
-		Update("application_status", 3)
+	result := tx.Where("applicant_id = ?", applicantID).Delete(&models.Applications{})
 
 	// Check if any rows were affected
 	if result.Error != nil {
@@ -316,15 +315,15 @@ func updateHouseHolds(tx *gorm.DB, updatedHousehold []models.CreateHouseholds, e
 				Relation:         newHousehold.Relation,
 			})
 		}
-		if len(createHouseholds) > 0 {
-			if err := tx.Save(&createHouseholds).Error; err != nil {
-				tx.Rollback()
-				log.Printf("Save new benefits failed: %v\n", err)
-				return nil, err
-			}
-		}
 	}
 
+	if len(createHouseholds) > 0 {
+		if err := tx.Save(&createHouseholds).Error; err != nil {
+			tx.Rollback()
+			log.Printf("Save new benefits failed: %v\n", err)
+			return nil, err
+		}
+	}
 	// Delete removed benefits
 	for _, household := range existingHouseholdsMapping {
 		tx.Delete(&household)

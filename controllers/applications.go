@@ -36,7 +36,7 @@ func (ac *ApplicationController) GetApplicationList(c *gin.Context) {
 	}
 
 	// Fetch applicants and return 500 Internal Server Error on failure
-	var query = ac.DB.Offset(applicationsRequest.Page * applicationsRequest.PageSize).Limit(applicationsRequest.PageSize)
+	var query = ac.DB.Offset(applicationsRequest.Page * applicationsRequest.PageSize).Limit(applicationsRequest.PageSize).Order("id")
 	if err := query.Preload("Scheme").
 		Preload("Scheme.CriteriaGroups.Criterias").
 		Preload("Scheme.Benefits").

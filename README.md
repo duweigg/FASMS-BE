@@ -3,6 +3,8 @@
 ## Overview
 This API, built with **Golang and Gin**, manages financial assistance schemes, applicants, and applications. It allows system administrators to register applicants, view eligible schemes, and submit applications.
 
+and this project comes with a simple demo at http://13.228.252.37
+
 ## Features
 - **CRUD operations** for applicants, schemes, and applications.
 - **Eligibility verification** based on applicant and scheme.

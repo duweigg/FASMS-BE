@@ -19,7 +19,7 @@ func main() {
 
 	// Allow CORS
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"}, // Change to frontend URL
+		AllowOrigins:     []string{"http://localhost:3000", "http://13.228.252.37"}, // Change to frontend URL
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		AllowCredentials: true,

@@ -52,7 +52,13 @@ func (car *CreateApplicationRequest) ConvertToModel() Applications {
 	return newApplication
 }
 
-// the biz logic is that applicant must satisify all the criteria groups.
+// An applicant must satisfy all criteria groups.
+// A group is considered satisfied if any one of its criteria is met.
+// Criteria can apply to:
+// 	The applicant (e.g., age, employment, sex, marital status)
+// 	Household members (with unique household IDs and matching logic)
+
+// biz logic: applicant must satisify all the criteria groups.
 // a criteria group is considered as satisified if any of the criteria in the groupo is satisified
 func CheckEligiblity(applicant Applicants, scheme Schemes) bool {
 	if len(scheme.CriteriaGroups) == 0 {
@@ -64,7 +70,6 @@ func CheckEligiblity(applicant Applicants, scheme Schemes) bool {
 	// check each group
 	for _, criteriaGroup := range scheme.CriteriaGroups {
 		var isHouseholdCriteriaGroup = true
-		// within the group, check if criteria is satisified
 		for _, criteria := range criteriaGroup.Criterias {
 			if !criteria.IsHouseHold {
 				isHouseholdCriteriaGroup = false
@@ -143,3 +148,73 @@ func IsHouseholdEligible(criteriaGroups []CriteriaGroup, households []Households
 
 	return false // No valid assignment found
 }
+
+// func NewCheckEligiblity(applicant Applicants, scheme Schemes) bool {
+// 	if len(scheme.CriteriaGroups) == 0 {
+// 		return true
+// 	}
+
+// 	for _, group := range scheme.CriteriaGroups {
+// 		usedHouseholds := make(map[string]bool)
+// 		if isGroupSatisfiedBacktracking(group.Criterias, applicant, usedHouseholds, 0) {
+// 			return true // At least one group satisfied
+// 		}
+// 	}
+// 	return false // None of the groups satisfied
+// }
+
+// // Backtracking function to satisfy all criteria in a group
+// func isGroupSatisfiedBacktracking(criteriaList []Criterias, applicant Applicants, used map[string]bool, index int) bool {
+// 	if index >= len(criteriaList) {
+// 		return true // All criteria satisfied
+// 	}
+
+// 	criteria := criteriaList[index]
+// 	if !criteria.IsHouseHold {
+// 		if matchApplicantCriteria(applicant, criteria) {
+// 			// Recurse to next criteria
+// 			if isGroupSatisfiedBacktracking(criteriaList, applicant, used, index+1) {
+// 				return true
+// 			}
+// 		}
+// 		return false // Applicant doesn't match this non-household criteria
+// 	}
+// 	for _, household := range applicant.Households {
+// 		if used[household.ID] {
+// 			continue
+// 		}
+// 		if matchHouseholdCriteria(household, criteria) {
+// 			// Choose this household
+// 			used[household.ID] = true
+
+// 			// Recurse to next criteria
+// 			if isGroupSatisfiedBacktracking(criteriaList, applicant, used, index+1) {
+// 				return true
+// 			}
+
+// 			// Backtrack
+// 			delete(used, household.ID)
+// 		}
+// 	}
+
+// 	return false // No match for this criteria
+// }
+
+// // Match logic for a household and a single criteria
+// func matchHouseholdCriteria(h Households, c Criterias) bool {
+// 	age := h.GetAge()
+// 	return (age >= c.AgeLowerLimit && age <= c.AgeUpperLimit) &&
+// 		(c.EmploymentStatus == 99 || h.EmploymentStatus == c.EmploymentStatus) &&
+// 		(c.Sex == 99 || h.Sex == c.Sex) &&
+// 		(c.Relation == 99 || h.Relation == c.Relation) &&
+// 		(c.MaritalStatus == 99 || h.MaritalStatus == c.MaritalStatus)
+// }
+
+// // Match logic for a household and a single criteria
+// func matchApplicantCriteria(a Applicants, c Criterias) bool {
+// 	age := a.GetAge()
+// 	return (age >= c.AgeLowerLimit && age <= c.AgeUpperLimit) &&
+// 		(c.EmploymentStatus == 99 || a.EmploymentStatus == c.EmploymentStatus) &&
+// 		(c.Sex == 99 || a.Sex == c.Sex) &&
+// 		(c.MaritalStatus == 99 || a.MaritalStatus == c.MaritalStatus)
+// }
